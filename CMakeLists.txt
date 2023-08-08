@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILE
 ${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.cc
 ${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.h
+${CMAKE_CURRENT_SOURCE_DIR}/source/display_window.h
+${CMAKE_CURRENT_SOURCE_DIR}/source/display_window.cc
 ${CMAKE_CURRENT_SOURCE_DIR}/source/device_info.cc
 ${CMAKE_CURRENT_SOURCE_DIR}/source/device_info.h
 ${CMAKE_CURRENT_SOURCE_DIR}/source/device_changed.h
