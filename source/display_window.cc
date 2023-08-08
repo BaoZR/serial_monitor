@@ -1,10 +1,75 @@
 #include "display_window.h"
 #include <stdexcept>
+#include <CommCtrl.h>
 
 static const wchar_t winClass[] = L"DislpayWindow";
 static const wchar_t winTitle[] = L"DislpayWindow";
 
 static DisplayWindow* g_window = NULL;
+
+HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
+{
+    TVITEM tvi;
+    TVINSERTSTRUCT tvins;
+    static HTREEITEM hPrev = (HTREEITEM)TVI_FIRST;
+    static HTREEITEM hPrevRootItem = NULL;
+    static HTREEITEM hPrevLev2Item = NULL;
+    HTREEITEM hti;
+
+    tvi.mask = TVIF_TEXT | TVIF_IMAGE
+        | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+
+    // Set the text of the item. 
+    tvi.pszText = lpszItem;
+    tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+
+    // Assume the item is not a parent item, so give it a 
+    // document image. 
+    //tvi.iImage = g_nDocument;
+    //tvi.iSelectedImage = g_nDocument;
+
+    // Save the heading level in the item's application-defined 
+    // data area. 
+    tvi.lParam = (LPARAM)nLevel;
+    tvins.item = tvi;
+    tvins.hInsertAfter = hPrev;
+
+    // Set the parent item based on the specified level. 
+    if (nLevel == 1)
+        tvins.hParent = TVI_ROOT;
+    else if (nLevel == 2)
+        tvins.hParent = hPrevRootItem;
+    else
+        tvins.hParent = hPrevLev2Item;
+
+    // Add the item to the tree-view control. 
+    hPrev = (HTREEITEM)SendMessage(hwndTV, TVM_INSERTITEM,
+        0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+
+    if (hPrev == NULL)
+        return NULL;
+
+    // Save the handle to the item. 
+    if (nLevel == 1)
+        hPrevRootItem = hPrev;
+    else if (nLevel == 2)
+        hPrevLev2Item = hPrev;
+
+    // The new item is a child item. Give the parent item a 
+    // closed folder bitmap to indicate it now has child items. 
+    if (nLevel > 1)
+    {
+        hti = TreeView_GetParent(hwndTV, hPrev);
+        tvi.mask = TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+        tvi.hItem = hti;
+     //   tvi.iImage = g_nClosed;
+    //    tvi.iSelectedImage = g_nClosed;
+        TreeView_SetItem(hwndTV, &tvi);
+    }
+
+    return hPrev;
+}
+
 
 DisplayWindow::DisplayWindow()
     :window_(NULL)
@@ -58,8 +123,9 @@ void DisplayWindow::DisplayRegisterClass(HINSTANCE hInstance)
 
 bool DisplayWindow::InitInstance(HINSTANCE hInstance)
 {
-    window_ = CreateWindowW(winClass, winTitle, WS_ICONIC, 0, 0,
-        CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+    window_ = CreateWindowW(winClass, winTitle, WS_ICONIC,
+        0, 0,CW_USEDEFAULT, 0,
+        NULL, NULL, hInstance, NULL);
     if (!window_)
     {
         started_ = false;
@@ -83,6 +149,38 @@ void DisplayWindow::ThreadProc()
         return;
     }
     this->started_ = true;
+
+    InitCommonControls();
+
+    RECT rcClient;  // dimensions of client area 
+    HWND hwndTV;    // handle to tree-view control 
+
+    // Ensure that the common control DLL is loaded. 
+    InitCommonControls();
+
+    // Get the dimensions of the parent window's client area, and create 
+    // the tree-view control. 
+    GetClientRect(window_, &rcClient);
+    hwndTV = CreateWindowExW(0,
+        WC_TREEVIEW,
+        TEXT("Tree View"),
+        WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES,
+        0,
+        0,
+        rcClient.right,
+        rcClient.bottom,
+        window_,
+        0,
+        hInstance,
+        NULL);
+
+    // Initialize the image list, and add items to the control. 
+    // InitTreeViewImageLists and InitTreeViewItems are application- 
+    // defined functions, shown later. 
+
+    AddItemToTree(hwndTV,L"hao",0);
+    AddItemToTree(hwndTV, L"hao", 0);
+    AddItemToTree(hwndTV, L"hao", 1);
 
     MSG msg;
     BOOL bRet(FALSE);
@@ -109,23 +207,30 @@ LRESULT DisplayWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 {
     switch (message)
     {
-    case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
-    }
-    break;
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            EndPaint(hWnd, &ps);
+        }
+        break;
     
-    case WM_DESTROY:
-    {
-        PostQuitMessage(0);
-    }
-    break;
-    default:
-    {
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+        }
+        break;
+
+        case  WM_COMMAND:
+        {
+            MessageBox(0, L"eeee", L"提示", MB_OK);
+        }
+        break;
+
+        default:
+        {
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
     }
     return 0;
 }

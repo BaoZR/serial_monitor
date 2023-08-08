@@ -23,7 +23,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/source/panel.h
 )
 
 add_executable(serial_monitor ${SOURCE_FILE})
-target_link_libraries(serial_monitor Setupapi)
+target_link_libraries(serial_monitor Setupapi Comctl32)
 
 
 if(MSVC)
