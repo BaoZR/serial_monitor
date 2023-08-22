@@ -4,13 +4,16 @@
 #include <Dbt.h>
 #include <stdexcept>
 #include <SetupAPI.h>
+#include <map>
 #include "device_info.h"
 #include "enum_device.h"
 #include "utils.h"
 #include "device_changed.h"
 
+
 class SimpleNotifyWindow
 {
+	typedef std::string DeviceId;
 	public:
 		SimpleNotifyWindow(IDeviceChanged& device_changed);
 		~SimpleNotifyWindow();
@@ -37,5 +40,6 @@ class SimpleNotifyWindow
 		bool destroy_;
         bool started_;
 		IDeviceChanged& device_changed_;
+
 };
 

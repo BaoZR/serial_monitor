@@ -13,6 +13,8 @@ int main()
 	Panel panel;
 	panel.start();
 	DisplayWindow w = DisplayWindow();
+	DeviceInfo info = { "你好","223" };
+	w.AddItem(info);
 	int i;
 	std::cin >> i;
 	std::cout << "hello world" << std::endl;

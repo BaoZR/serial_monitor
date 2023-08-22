@@ -1,11 +1,13 @@
 #include "display_window.h"
 #include <stdexcept>
 #include <CommCtrl.h>
+#include <iostream>
 
 static const wchar_t winClass[] = L"DislpayWindow";
 static const wchar_t winTitle[] = L"DislpayWindow";
 
 static DisplayWindow* g_window = NULL;
+HWND hwndTV = NULL;    // handle to tree-view control 
 
 HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
 {
@@ -43,8 +45,8 @@ HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
         tvins.hParent = hPrevLev2Item;
 
     // Add the item to the tree-view control. 
-    hPrev = (HTREEITEM)SendMessage(hwndTV, TVM_INSERTITEM,
-        0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+    hPrev = (HTREEITEM)SendMessageW(hwndTV, TVM_INSERTITEMW,
+        0, (LPARAM)(LPTVINSERTSTRUCTW)&tvins);
 
     if (hPrev == NULL)
         return NULL;
@@ -76,7 +78,7 @@ DisplayWindow::DisplayWindow()
     , started_(false)
     , thread_(&DisplayWindow::ThreadProc, this)
 {
-    while (started_ == false)
+    while (started_ == false || hwndTV == NULL)
     {
         printf(".");
     }
@@ -94,6 +96,44 @@ DisplayWindow::~DisplayWindow()
     PostMessage(window_, WM_CLOSE, 0, 0);
     thread_.join();
     g_window = NULL;
+}
+
+bool DisplayWindow::AddItem(DeviceInfo info)
+{
+    TVITEM tvi;
+    TVINSERTSTRUCT tvins;
+    HTREEITEM handle = NULL;
+
+    tvi.mask = TVIF_TEXT | TVIF_IMAGE
+        | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+    
+    int len = lstrlenW((utils::to_wstring(info.GetDbcc()).c_str()));
+
+    std::unique_ptr<wchar_t[]> text_holder = std::make_unique<wchar_t[]>(len + 1);//找少统帮忙？
+   ::wmemcpy_s(text_holder.get(), len, utils::to_wstring(info.GetDbcc()).c_str(), len);
+ 
+    tvi.pszText = text_holder.get();
+    tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+
+    tvi.lParam = (LPARAM)0;
+    tvins.item = tvi;
+    tvins.hInsertAfter = (HTREEITEM)TVI_FIRST; 
+    tvins.hParent = TVI_ROOT;
+
+    
+
+    std::cout << "add_item" << info.GetFriendlyName() << std::endl;
+    handle = (HTREEITEM)SendMessageW(hwndTV, TVM_INSERTITEMW,
+        0, (LPARAM)(LPTVINSERTSTRUCTW)&tvins);
+
+    utils::PrintWinError((LPWSTR)utils::to_wstring("++").c_str());
+
+    return false;
+}
+
+bool DisplayWindow::DeleteItem(DeviceInfo info)
+{
+    return false;
 }
 
 
@@ -150,10 +190,25 @@ void DisplayWindow::ThreadProc()
     }
     this->started_ = true;
 
+
+    HWND hwndButton = CreateWindowW(
+        L"BUTTON",  // Predefined class; Unicode assumed 
+        L"OK",      // Button text 
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+        10,         // x position 
+        10,         // y position 
+        100,        // Button width
+        100,        // Button height
+        window_,     // Parent window
+        NULL,       // No menu.
+        (HINSTANCE)GetWindowLongPtr(window_, GWLP_HINSTANCE),
+        NULL);      // Pointer not needed.
+
+
     InitCommonControls();
 
     RECT rcClient;  // dimensions of client area 
-    HWND hwndTV;    // handle to tree-view control 
+
 
     // Ensure that the common control DLL is loaded. 
     InitCommonControls();
@@ -165,10 +220,10 @@ void DisplayWindow::ThreadProc()
         WC_TREEVIEW,
         TEXT("Tree View"),
         WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES,
-        0,
-        0,
-        rcClient.right,
-        rcClient.bottom,
+        90,
+        90,
+        50,
+        100,
         window_,
         0,
         hInstance,
@@ -223,6 +278,7 @@ LRESULT DisplayWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
         case  WM_COMMAND:
         {
+            AddItemToTree(hwndTV, L"hao", 0);
             MessageBox(0, L"eeee", L"提示", MB_OK);
         }
         break;

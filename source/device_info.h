@@ -1,6 +1,8 @@
 #ifndef _DEVICE_INFO_
 #define _DEVICE_INFO_
 
+
+
 #include <string>
 class DeviceInfo
 {
