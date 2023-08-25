@@ -12,9 +12,15 @@ int main()
 	j = 5;
 	Panel panel;
 	panel.start();
-	DisplayWindow w = DisplayWindow();
-	DeviceInfo info = { "你好","223" };
-	w.AddItem(info);
+	//DisplayWindow w = DisplayWindow();
+	//DeviceInfo info = { "你好","223" };
+	//DeviceInfo info2 = { "你好2","223" };
+	//w.AddItem(info);
+	//w.AddItem(info);
+	//w.AddItem(info2);
+	//w.DeleteItem("你好");
+	//w.DeleteItem("你好");
+	//w.DeleteItem("你好2");
 	int i;
 	std::cin >> i;
 	std::cout << "hello world" << std::endl;

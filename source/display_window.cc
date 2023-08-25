@@ -11,8 +11,8 @@ HWND hwndTV = NULL;    // handle to tree-view control
 
 HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
 {
-    TVITEM tvi;
-    TVINSERTSTRUCT tvins;
+    TVITEM tvi{};
+    TVINSERTSTRUCT tvins{};
     static HTREEITEM hPrev = (HTREEITEM)TVI_FIRST;
     static HTREEITEM hPrevRootItem = NULL;
     static HTREEITEM hPrevLev2Item = NULL;
@@ -100,22 +100,27 @@ DisplayWindow::~DisplayWindow()
 
 bool DisplayWindow::AddItem(DeviceInfo info)
 {
-    TVITEM tvi;
-    TVINSERTSTRUCT tvins;
+    if (items_.count(info.GetDbcc()) != 0)
+    {
+        return false;
+    }
+
+    TVITEM tvi{};
+    TVINSERTSTRUCT tvins{};
     HTREEITEM handle = NULL;
 
     tvi.mask = TVIF_TEXT | TVIF_IMAGE
         | TVIF_SELECTEDIMAGE | TVIF_PARAM;
     
-    int len = lstrlenW((utils::to_wstring(info.GetDbcc()).c_str()));
+    int len = lstrlenW((utils::to_wstring(info.GetFriendlyName()).c_str()));
 
     std::unique_ptr<wchar_t[]> text_holder = std::make_unique<wchar_t[]>(len + 1);//找少统帮忙？
-   ::wmemcpy_s(text_holder.get(), len, utils::to_wstring(info.GetDbcc()).c_str(), len);
+   ::wmemcpy_s(text_holder.get(), len, utils::to_wstring(info.GetFriendlyName()).c_str(), len);
  
     tvi.pszText = text_holder.get();
-    tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
-
+    tvi.cchTextMax =len;
     tvi.lParam = (LPARAM)0;
+    
     tvins.item = tvi;
     tvins.hInsertAfter = (HTREEITEM)TVI_FIRST; 
     tvins.hParent = TVI_ROOT;
@@ -125,15 +130,38 @@ bool DisplayWindow::AddItem(DeviceInfo info)
     std::cout << "add_item" << info.GetFriendlyName() << std::endl;
     handle = (HTREEITEM)SendMessageW(hwndTV, TVM_INSERTITEMW,
         0, (LPARAM)(LPTVINSERTSTRUCTW)&tvins);
-
+    if (handle == NULL)
+    {
+        return false;
+    }
+    if (items_.count(info.GetDbcc()) == 0)
+    {
+        items_[info.GetDbcc()] = handle;
+    }
     utils::PrintWinError((LPWSTR)utils::to_wstring("++").c_str());
 
-    return false;
+    return true;
 }
 
-bool DisplayWindow::DeleteItem(DeviceInfo info)
+bool DisplayWindow::DeleteItem(DeviceId id)
 {
-    return false;
+    bool flag = false;
+    HTREEITEM handle{};
+    if (items_[id] == NULL)
+    {
+        return false;
+    }
+    handle = items_[id];
+
+    flag = SendMessageW(hwndTV, TVM_DELETEITEM, 0, (LPARAM)handle);
+    
+    if (flag == true)
+    {
+        std::cout << "delete success" << std::endl;
+        items_.erase(id);
+    }
+
+    return flag;
 }
 
 
@@ -164,7 +192,7 @@ void DisplayWindow::DisplayRegisterClass(HINSTANCE hInstance)
 bool DisplayWindow::InitInstance(HINSTANCE hInstance)
 {
     window_ = CreateWindowW(winClass, winTitle, WS_ICONIC,
-        0, 0,CW_USEDEFAULT, 0,
+        0, 0,200, 150,
         NULL, NULL, hInstance, NULL);
     if (!window_)
     {
@@ -191,18 +219,18 @@ void DisplayWindow::ThreadProc()
     this->started_ = true;
 
 
-    HWND hwndButton = CreateWindowW(
-        L"BUTTON",  // Predefined class; Unicode assumed 
-        L"OK",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-        10,         // x position 
-        10,         // y position 
-        100,        // Button width
-        100,        // Button height
-        window_,     // Parent window
-        NULL,       // No menu.
-        (HINSTANCE)GetWindowLongPtr(window_, GWLP_HINSTANCE),
-        NULL);      // Pointer not needed.
+    //HWND hwndButton = CreateWindowW(
+    //    L"BUTTON",  // Predefined class; Unicode assumed 
+    //    L"OK",      // Button text 
+    //    WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+    //    10,         // x position 
+    //    10,         // y position 
+    //    100,        // Button width
+    //    100,        // Button height
+    //    window_,     // Parent window
+    //    NULL,       // No menu.
+    //    (HINSTANCE)GetWindowLongPtr(window_, GWLP_HINSTANCE),
+    //    NULL);      // Pointer not needed.
 
 
     InitCommonControls();
@@ -220,9 +248,9 @@ void DisplayWindow::ThreadProc()
         WC_TREEVIEW,
         TEXT("Tree View"),
         WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES,
-        90,
-        90,
-        50,
+        0,
+        0,
+        200,
         100,
         window_,
         0,
@@ -233,9 +261,7 @@ void DisplayWindow::ThreadProc()
     // InitTreeViewImageLists and InitTreeViewItems are application- 
     // defined functions, shown later. 
 
-    AddItemToTree(hwndTV,L"hao",0);
-    AddItemToTree(hwndTV, L"hao", 0);
-    AddItemToTree(hwndTV, L"hao", 1);
+
 
     MSG msg;
     BOOL bRet(FALSE);
@@ -278,8 +304,8 @@ LRESULT DisplayWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
         case  WM_COMMAND:
         {
-            AddItemToTree(hwndTV, L"hao", 0);
-            MessageBox(0, L"eeee", L"提示", MB_OK);
+            //AddItemToTree(hwndTV, L"hao", 0);
+            //MessageBox(0, L"eeee", L"提示", MB_OK);
         }
         break;
 

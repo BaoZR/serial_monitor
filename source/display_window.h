@@ -16,7 +16,7 @@ public:
 	DisplayWindow(const DisplayWindow&) = delete;
 	DisplayWindow& operator=(const DisplayWindow&) = delete;
 	bool AddItem(DeviceInfo info);
-	bool DeleteItem(DeviceInfo info);
+	bool DeleteItem(DeviceId Id);
 
 private:
 	bool InitInstance(HINSTANCE hInstance);

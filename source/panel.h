@@ -6,6 +6,7 @@
 #include <mutex>
 #include "device_changed.h"
 #include <map>
+#include "display_window.h"
 
 class Panel : public IDeviceChanged{
 typedef std::string DeviceId;
@@ -23,8 +24,9 @@ private:
     void InterfaceRemoved(const std::string& lower_dbcc);
 
 private:
-    std::unique_ptr<SimpleNotifyWindow> window_;
-	HDEVNOTIFY notify_;
+    std::unique_ptr<SimpleNotifyWindow> notify_window_;
+    std::unique_ptr<DisplayWindow> show_window_;
+	HDEVNOTIFY notify_handle;
     std::mutex section_;
     std::map<DeviceId,DeviceInfo> actual_devices_;
 };
