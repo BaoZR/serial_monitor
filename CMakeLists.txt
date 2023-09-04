@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 3.8)
 
+if(POLICY CMP0091)
+	cmake_policy(SET CMP0091 NEW) 
+endif (POLICY CMP0091)
+
 project(serial_monitor)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -25,6 +29,9 @@ ${CMAKE_CURRENT_SOURCE_DIR}/source/panel.h
 add_executable(serial_monitor ${SOURCE_FILE})
 target_link_libraries(serial_monitor Setupapi Comctl32)
 
+set_target_properties(serial_monitor PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
 
 if(MSVC)
     target_compile_options(serial_monitor PRIVATE "/utf-8")
