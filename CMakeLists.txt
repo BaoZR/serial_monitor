@@ -4,12 +4,11 @@ if(POLICY CMP0091)
 	cmake_policy(SET CMP0091 NEW) 
 endif (POLICY CMP0091)
 
-project(serial_monitor)
-
-
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILE
+project(serial_monitor_demo)
+
+set(SOURCE_FILE_DEMO
 ${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.cc
 ${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.h
 ${CMAKE_CURRENT_SOURCE_DIR}/source/display_window.h
@@ -26,15 +25,40 @@ ${CMAKE_CURRENT_SOURCE_DIR}/source/panel.cc
 ${CMAKE_CURRENT_SOURCE_DIR}/source/panel.h
 )
 
-add_executable(serial_monitor ${SOURCE_FILE})
-target_link_libraries(serial_monitor Setupapi Comctl32)
+add_executable(serial_monitor_demo ${SOURCE_FILE_DEMO})
+target_link_libraries(serial_monitor_demo Setupapi Comctl32)
 
-set_target_properties(serial_monitor PROPERTIES
+set_target_properties(serial_monitor_demo PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 
 if(MSVC)
-    target_compile_options(serial_monitor PRIVATE "/utf-8")
-    target_compile_definitions(serial_monitor PRIVATE "_UNICODE" "UNICODE")
+    target_compile_options(serial_monitor_demo PRIVATE "/utf-8")
+    target_compile_definitions(serial_monitor_demo PRIVATE "_UNICODE" "UNICODE")
 endif()
+
+########################################################
+project(serial_monitor_lib)
+
+set(SOURCE_FILE_LIB
+${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.cc
+${CMAKE_CURRENT_SOURCE_DIR}/source/simple_notify_window.h
+${CMAKE_CURRENT_SOURCE_DIR}/source/serial_monitor_lib.cc
+${CMAKE_CURRENT_SOURCE_DIR}/source/serial_monitor_lib.h
+)
+
+add_library(serial_monitor_lib ${SOURCE_FILE_LIB})
+target_link_libraries(serial_monitor_lib Setupapi)
+
+set_target_properties(serial_monitor_lib PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
+
+if(MSVC)
+    target_compile_options(serial_monitor_lib PRIVATE "/utf-8")
+    target_compile_definitions(serial_monitor_lib PRIVATE "_UNICODE" "UNICODE")
+endif()
+
+
+
 
