@@ -1,4 +1,6 @@
+#define SERIAL_MONITOR_LIB_EXPORTS
 #include "simple_notify_window.h"
+#include "utils.h"
 #include <vector>
 #include <iostream>
 
@@ -16,6 +18,7 @@ SimpleNotifyWindow::SimpleNotifyWindow(IDeviceChanged& device_changed)
     ,thread_(&SimpleNotifyWindow::ThreadProc, this)
     ,device_changed_(device_changed)
 {	
+   
     while(started_ == false && destroy_ == false)
     {
         printf(".");
@@ -35,6 +38,8 @@ SimpleNotifyWindow::~SimpleNotifyWindow()
     PostMessage(window_, WM_CLOSE, 0, 0);
     thread_.join();
     g_window = NULL;
+    std::cout << "window delete" << std::endl;
+
 }
 
 HWND SimpleNotifyWindow::GetHandle() const
@@ -116,13 +121,13 @@ LRESULT SimpleNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
                         //printf("%s", devNot->dbcc_name);
                         g_window->device_changed_.InterfaceArrival(devNot->dbcc_classguid);
 
-                        std::cout << dbcc_name << " arrived" << std::endl;
+                        //std::cout << dbcc_name << " arrived" << std::endl;
                     }
                     else
                     {
                         g_window->device_changed_.InterfaceRemoved(utils::StringLower(dbcc_name));
                         //g_NotifyWindow->deviceChanged_.InterfaceRemoved(Utilities::StringUpper(devNot->dbcc_name));
-                        std::cout << dbcc_name << " removed" << std::endl;
+                        //std::cout << dbcc_name << " removed" << std::endl;
                     }
                 }
             }

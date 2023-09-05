@@ -14,7 +14,7 @@ public:
 	);
 	~DeviceInfo();
 
-	std::string GetFriendlyName()
+	std::string GetFriendlyName() const
 	{
 		return friendly_name_;
 	}
