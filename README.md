@@ -1,5 +1,5 @@
 # serial_monitor
 
-用于监听串口的插入和拔出
+用于windows上监听串口设备的插入和拔出
 
 
