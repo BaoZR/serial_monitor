@@ -21,14 +21,14 @@ SimpleNotifyWindow::SimpleNotifyWindow(IDeviceChanged& device_changed)
    
     while(started_ == false && destroy_ == false)
     {
-        printf(".");
+        printf("");//这里还必须加
     }
     if (g_window != NULL)
     {
         throw std::runtime_error("Only one instance of the NotifyWindow can be created");
     }
     g_window = this;
-    puts("\nnotify window started");
+    //puts("\nnotify window started");
 }
 
 SimpleNotifyWindow::~SimpleNotifyWindow()

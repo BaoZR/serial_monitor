@@ -80,14 +80,14 @@ DisplayWindow::DisplayWindow()
 {
     while (started_ == false || hwndTV == NULL)
     {
-        printf(".");
+        printf("");
     }
     if (g_window != NULL)
     {
         throw std::runtime_error("Only one instance of the DisplayWindow can be created");
     }
     g_window = this;
-    puts("\ndisplay window started");
+    //puts("\ndisplay window started");
 }
 
 DisplayWindow::~DisplayWindow()
