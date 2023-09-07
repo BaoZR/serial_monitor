@@ -4,4 +4,4 @@
 
 发布了一个用于演示效果的demo和一个用于使用的lib库
 
-![gif](https://github.com/serial_monitor/demo.gif)
+![image](https://github.com/serial_monitor/demo.gif)
