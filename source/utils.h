@@ -4,6 +4,7 @@
 #include <string>
 #include <Windows.h>
 #include <strsafe.h>
+#include <cctype>
 
 namespace utils
 {
