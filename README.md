@@ -13,7 +13,7 @@ The main header file is [serial_monitor_lib](/source/lib/serial_monitor_lib.h)
 Function Name     | Description
 -------- | -----
 device_change_progress | The status callback function of the monitor needs to be passed into the monitor_init initialization function. When a serial device is inserted or pulled out, it returns device status information.
-monitor_init | Used to initialize the monitoring thread. Because the listening is single-window, please don't call it repeatedly.
+monitor_init | Used to initialize the monitoring listener. Because the listening is single-window, please don't call it repeatedly.
 monitor_terminate | Used to destroy the listener.
 
 
