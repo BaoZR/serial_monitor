@@ -4,7 +4,7 @@
 #include <thread>
 #include <map>
 #include "device_info.h"
-#include "utils.h"
+#include "serial_monitor_utils.h"
 #include "commctrl.h"
 
 class DisplayWindow
@@ -15,7 +15,7 @@ public:
 	~DisplayWindow();
 	DisplayWindow(const DisplayWindow&) = delete;
 	DisplayWindow& operator=(const DisplayWindow&) = delete;
-	bool AddItem(DeviceInfo info);
+	bool AddItem(serial_monitor_lib::DeviceInfo info);
 	bool DeleteItem(DeviceId Id);
 
 private:

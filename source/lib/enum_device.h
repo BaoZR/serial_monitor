@@ -8,14 +8,14 @@
 #include <dbt.h>
 #include <stdexcept>
 #include "device_info.h"
-#include "utils.h"
+#include "serial_monitor_utils.h"
 
 namespace detect_device{
     HDEVNOTIFY RegisterNotify(const GUID& guid, HANDLE hWnd);
     void UnRegisterNotify(HDEVNOTIFY hNotyfy);
     std::string GetDeviceRegistryProperty(HDEVINFO& hDevInfo, PSP_DEVINFO_DATA pdevInfoData, DWORD dwProperty);
     //bool ReadDeviceInfo( GUID* guid, const std::string& dbcc_name, DeviceInfo& info);
-    std::vector<DeviceInfo> GetDevicesByGuid(GUID* guid);
+    std::vector<serial_monitor_lib::DeviceInfo> GetDevicesByGuid(GUID* guid);
 }
 
 

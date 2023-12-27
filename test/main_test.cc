@@ -1,5 +1,4 @@
 #include "serial_monitor_lib.h"
-#include "utils.h"
 #include <iostream>
 void print_device(const std::string& id,int status,const std::string& friendly_name)
 {

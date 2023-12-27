@@ -1,7 +1,21 @@
 # serial_monitor
+en [English](README.md) | zh_CN [简体中文](readme/README.zh_CN.md)
 
-用于windows上监听串口设备的插入和拔出,原理是开了个线程监听windows消息
+The library is used for monitoring  the insertion and removal of serial port devices on Windows.
+The principle is to start a thread to monitor Windows messages.
 
-发布了一个用于演示效果的demo和一个用于使用的lib库
+A demo was released for demonstration[demo](releases/tag/demo) A library was published for use[lib库](releases/tag/lib)
 
-![image](https://github.com/BaoZR/serial_monitor/blob/master/demo.gif)
+![image](demo.gif)
+
+The main header file is[serial_monitor_lib](/source/lib/serial_monitor_lib.h)
+# Function Introduction ：
+Function Name     | Description
+-------- | -----
+device_change_progress | The status callback function of the monitor needs to be passed into the monitor_init initialization function. When a serial device is inserted or pulled out, it returns device status information.
+monitor_init | Used to initialize the monitoring thread. Because the listening is single-window, please don't call it repeatedly.
+monitor_terminate | Used to destroy the listener.
+
+
+
+

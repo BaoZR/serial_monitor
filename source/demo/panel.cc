@@ -22,8 +22,8 @@ void Panel::start(){
 
 void Panel::InterfaceArrival(const GUID& guid)
 {
-    std::vector<DeviceInfo> temp_devices = detect_device::GetDevicesByGuid(&const_cast<GUID&>(guid));
-    for(std::vector<DeviceInfo>::const_iterator iter = temp_devices.begin();iter != temp_devices.end();iter++)
+    std::vector<serial_monitor_lib::DeviceInfo> temp_devices = detect_device::GetDevicesByGuid(&const_cast<GUID&>(guid));
+    for(std::vector<serial_monitor_lib::DeviceInfo>::const_iterator iter = temp_devices.begin();iter != temp_devices.end();iter++)
     {
         Found(*iter);
 
@@ -37,7 +37,7 @@ void Panel::InterfaceRemoved(const std::string& lower_dbcc)
 }
 
 
-void Panel::Found(const DeviceInfo& info)
+void Panel::Found(const serial_monitor_lib::DeviceInfo& info)
 {
     section_.lock();
     if(actual_devices_.count(info.GetDbcc()) == 0)

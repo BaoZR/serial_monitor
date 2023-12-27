@@ -6,12 +6,12 @@
 #include <strsafe.h>
 #include <cctype>
 
-namespace utils
+namespace serial_monitor_utils
 {
-    std::string StringLower(const std::string& s);
+    std::string string_lower(const std::string& s);
     std::string to_string(std::wstring const& wstr);
     std::wstring to_wstring(std::string const& str);
-    void PrintWinError(LPWSTR msg);
+    void print_windows_error(LPWSTR msg);
 }
 
 #endif

@@ -17,7 +17,7 @@ HDEVNOTIFY detect_device::RegisterNotify(const GUID& guid, HANDLE hWnd)
 
     if (hDevNotify == NULL)
     {
-        utils::PrintWinError(L"Can not register device notify");
+        serial_monitor_utils::print_windows_error(L"Can not register device notify");
         //throw std::runtime_error("Can not register device notify");
         return NULL;
     }
@@ -33,7 +33,7 @@ void detect_device::UnRegisterNotify(HDEVNOTIFY hNotyfy)
     }
     if (FALSE == UnregisterDeviceNotification(hNotyfy))
     {
-        utils::PrintWinError(L"Can not unregister device notify");
+        serial_monitor_utils::print_windows_error(L"Can not unregister device notify");
         //throw std::runtime_error("Can not unregister device notify");
         return;
     }
@@ -50,7 +50,7 @@ std::string detect_device::GetDeviceRegistryProperty(HDEVINFO& hDevInfo, PSP_DEV
     if (NULL == pdevInfoData)
     {
         // Wrong PSP_DEVINFO_DATA parameter");
-        utils::PrintWinError(L"Wrong PSP_DEVINFO_DATA parameter");
+        serial_monitor_utils::print_windows_error(L"Wrong PSP_DEVINFO_DATA parameter");
         return std::string();
     }
 
@@ -92,7 +92,7 @@ std::string detect_device::GetDeviceRegistryProperty(HDEVINFO& hDevInfo, PSP_DEV
         return std::string();
     }
 
-    return utils::to_string(&sResult.front());
+    return serial_monitor_utils::to_string(&sResult.front());
 }
 
 // bool detect_device::ReadDeviceInfo(GUID *guid, const std::string &dbcc_name, DeviceInfo &info)
@@ -121,8 +121,8 @@ std::string detect_device::GetDeviceRegistryProperty(HDEVINFO& hDevInfo, PSP_DEV
 //         DWORD dwReqSize = 0;
 //         if (TRUE == ::SetupDiGetDeviceInterfaceDetailW(hDevInfo, &devInterfaceData, pDevInfoDetail, sizeof(tcBuffer) / sizeof(TCHAR), &dwReqSize, &devInfoData))
 //         {
-//             std::string temp = utils::to_string(pDevInfoDetail->DevicePath);
-//             if (utils::StringLower(temp) == utils::StringLower(dbcc_name))
+//             std::string temp = serial_monitor_utils::to_string(pDevInfoDetail->DevicePath);
+//             if (serial_monitor_utils::string_lower(temp) == serial_monitor_utils::string_lower(dbcc_name))
 //             {
 //                 info.SetDbcc(dbcc_name);
 //                 info.SetFriendlyName(GetDeviceRegistryProperty(hDevInfo, &devInfoData, SPDRP_FRIENDLYNAME));
@@ -134,14 +134,14 @@ std::string detect_device::GetDeviceRegistryProperty(HDEVINFO& hDevInfo, PSP_DEV
 //     return false;
 // }
 
-std::vector<DeviceInfo> detect_device::GetDevicesByGuid(GUID* guid)
+std::vector<serial_monitor_lib::DeviceInfo> detect_device::GetDevicesByGuid(GUID* guid)
 {
-    std::vector<DeviceInfo> devices;
+    std::vector<serial_monitor_lib::DeviceInfo> devices;
     HDEVINFO hDevInfo =  ::SetupDiGetClassDevsW(guid, NULL, NULL, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
     if (INVALID_HANDLE_VALUE == hDevInfo)
     {
         // Can't Find Class Devises");
-        utils::PrintWinError(L"Can't Find Class Devises");
+        serial_monitor_utils::print_windows_error(L"Can't Find Class Devises");
         return devices;
     }
 
@@ -162,9 +162,9 @@ std::vector<DeviceInfo> detect_device::GetDevicesByGuid(GUID* guid)
         DWORD dwReqSize = 0;
         if (TRUE == ::SetupDiGetDeviceInterfaceDetailW(hDevInfo, &devInterfaceData, pDevInfoDetail, sizeof(tcBuffer) / sizeof(TCHAR), &dwReqSize, &devInfoData))
         {
-            std::string dbcc_name = utils::StringLower(utils::to_string(pDevInfoDetail->DevicePath));
+            std::string dbcc_name = serial_monitor_utils::string_lower(serial_monitor_utils::to_string(pDevInfoDetail->DevicePath));
             {
-                DeviceInfo info;
+                serial_monitor_lib::DeviceInfo info;
                 info.SetDbcc(dbcc_name);
                 info.SetFriendlyName(GetDeviceRegistryProperty(hDevInfo, &devInfoData, SPDRP_FRIENDLYNAME));
                 devices.push_back(info);

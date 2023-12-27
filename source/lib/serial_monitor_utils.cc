@@ -1,9 +1,9 @@
-#include "utils.h"
+#include "serial_monitor_utils.h"
 
 
-using namespace utils;
 
-std::string utils::StringLower(const std::string &s)
+
+std::string serial_monitor_utils::string_lower(const std::string &s)
 {
     std::string str = s;
     for (size_t i = 0; i < str.size(); i++)
@@ -13,7 +13,7 @@ std::string utils::StringLower(const std::string &s)
     return str;
 }
 
-void utils::PrintWinError(LPWSTR msg)
+void serial_monitor_utils::print_windows_error(LPWSTR msg)
 {
     // Retrieve the system error message for the last-error code
 
@@ -27,7 +27,7 @@ void utils::PrintWinError(LPWSTR msg)
             FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),
         (LPWSTR)&lpMsgBuf,
         0, NULL);
 
@@ -46,14 +46,14 @@ void utils::PrintWinError(LPWSTR msg)
                      LocalSize(lpDisplayBuf) / sizeof(WCHAR),
                      L"%s failed with error %d: %s",
                      msg, dw, (LPWSTR)lpMsgBuf);
-    puts(utils::to_string((LPWSTR)lpDisplayBuf).c_str());
+    puts(serial_monitor_utils::to_string((LPWSTR)lpDisplayBuf).c_str());
 
     LocalFree(lpMsgBuf);
     LocalFree(lpDisplayBuf);
     return;
 }
 
-std::wstring utils::to_wstring(std::string const &str)
+std::wstring serial_monitor_utils::to_wstring(std::string const &str)
 {
     std::wstring ustr;
     int const length = MultiByteToWideChar(
@@ -72,7 +72,7 @@ std::wstring utils::to_wstring(std::string const &str)
     return ustr;
 }
 
-std::string utils::to_string(std::wstring const &wstr)
+std::string serial_monitor_utils::to_string(std::wstring const &wstr)
 {
     std::string str;
     int const length = WideCharToMultiByte(

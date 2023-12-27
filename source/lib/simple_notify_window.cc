@@ -1,6 +1,6 @@
 #define SERIAL_MONITOR_LIB_EXPORTS
 #include "simple_notify_window.h"
-#include "utils.h"
+#include "serial_monitor_utils.h"
 #include <vector>
 #include <iostream>
 
@@ -112,7 +112,7 @@ LRESULT SimpleNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
                 if (header->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
                 {
                     DEV_BROADCAST_DEVICEINTERFACE_W* devNot = reinterpret_cast<DEV_BROADCAST_DEVICEINTERFACE_W*>(lParam);
-                    std::string dbcc_name = utils::to_string(devNot->dbcc_name);
+                    std::string dbcc_name = serial_monitor_utils::to_string(devNot->dbcc_name);
                     
                     if (DBT_DEVICEARRIVAL == wParam)
                     {
@@ -125,7 +125,7 @@ LRESULT SimpleNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
                     }
                     else
                     {
-                        g_window->device_changed_.InterfaceRemoved(utils::StringLower(dbcc_name));
+                        g_window->device_changed_.InterfaceRemoved(serial_monitor_utils::string_lower(dbcc_name));
                         //g_NotifyWindow->deviceChanged_.InterfaceRemoved(Utilities::StringUpper(devNot->dbcc_name));
                         //std::cout << dbcc_name << " removed" << std::endl;
                     }

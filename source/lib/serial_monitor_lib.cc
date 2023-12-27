@@ -20,7 +20,7 @@ private:
 static std::unique_ptr<SimpleNotifyWindow> window_ = nullptr;
 static std::unique_ptr<DeviceChange> device_change_ = nullptr;
 static HDEVNOTIFY h_dev_notify_ = nullptr;
-static std::map<DeviceId, DeviceInfo> actual_devices_;
+static std::map<DeviceId, serial_monitor_lib::DeviceInfo> actual_devices_;
 static bool init_flag_ = false;
 static std::mutex section_;
 
@@ -41,8 +41,8 @@ void DeviceChange::InterfaceRemoved(const std::string &lower_dbcc)
 }
 void DeviceChange::InterfaceArrival(const GUID &guid)
 {
-    std::vector<DeviceInfo> temp_devices = detect_device::GetDevicesByGuid(&const_cast<GUID&>(guid));
-    for(std::vector<DeviceInfo>::const_iterator iter = temp_devices.begin();iter != temp_devices.end();iter++)
+    std::vector<serial_monitor_lib::DeviceInfo> temp_devices = detect_device::GetDevicesByGuid(&const_cast<GUID&>(guid));
+    for(std::vector<serial_monitor_lib::DeviceInfo>::const_iterator iter = temp_devices.begin();iter != temp_devices.end();iter++)
     {
         section_.lock();
         if(actual_devices_.count((*iter).GetDbcc()) == 0)

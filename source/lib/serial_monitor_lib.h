@@ -66,7 +66,7 @@ void SERIAL_MONITOR_API monitor_init(
     IN device_change_progress progress_cb
 );
 
-/** @brief 用于关闭监听
+/** @brief 用于关闭销毁监听
  * 
  */
 void SERIAL_MONITOR_API monitor_terminate();

@@ -1,9 +1,9 @@
 #ifndef _DEVICE_INFO_
 #define _DEVICE_INFO_
 
-
-
 #include <string>
+namespace serial_monitor_lib{
+
 class DeviceInfo
 {
 public:
@@ -42,5 +42,6 @@ public:
 		//std::string port_name_;//COM1 COM2
 };
 
+}
 
 #endif //_DEVICE_INFO_

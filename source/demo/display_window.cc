@@ -23,7 +23,8 @@ HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
 
     // Set the text of the item. 
     tvi.pszText = lpszItem;
-    tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+    //sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+    tvi.cchTextMax = lstrlen(tvi.pszText);
 
     // Assume the item is not a parent item, so give it a 
     // document image. 
@@ -98,7 +99,7 @@ DisplayWindow::~DisplayWindow()
     g_window = NULL;
 }
 
-bool DisplayWindow::AddItem(DeviceInfo info)
+bool DisplayWindow::AddItem(serial_monitor_lib::DeviceInfo info)
 {
     if (items_.count(info.GetDbcc()) != 0)
     {
@@ -112,10 +113,10 @@ bool DisplayWindow::AddItem(DeviceInfo info)
     tvi.mask = TVIF_TEXT | TVIF_IMAGE
         | TVIF_SELECTEDIMAGE | TVIF_PARAM;
     
-    int len = lstrlenW((utils::to_wstring(info.GetFriendlyName()).c_str()));
+    int len = lstrlenW((serial_monitor_utils::to_wstring(info.GetFriendlyName()).c_str()));
 
     std::unique_ptr<wchar_t[]> text_holder = std::make_unique<wchar_t[]>(len + 1);//找少统帮忙？
-   ::wmemcpy_s(text_holder.get(), len, utils::to_wstring(info.GetFriendlyName()).c_str(), len);
+   ::wmemcpy_s(text_holder.get(), len, serial_monitor_utils::to_wstring(info.GetFriendlyName()).c_str(), len);
  
     tvi.pszText = text_holder.get();
     tvi.cchTextMax =len;
@@ -138,7 +139,7 @@ bool DisplayWindow::AddItem(DeviceInfo info)
     {
         items_[info.GetDbcc()] = handle;
     }
-    utils::PrintWinError((LPWSTR)utils::to_wstring("++").c_str());
+    serial_monitor_utils::print_windows_error((LPWSTR)serial_monitor_utils::to_wstring("++").c_str());
 
     return true;
 }

@@ -17,7 +17,7 @@ public:
 	Panel& operator=(const Panel&) = delete;
 
     void start();
-    void Found(const DeviceInfo& info);
+    void Found(const serial_monitor_lib::DeviceInfo& info);
     void Lost(const DeviceId& id);
 private:
     void InterfaceArrival(const GUID& guid);
@@ -28,7 +28,7 @@ private:
     std::unique_ptr<DisplayWindow> show_window_;
 	HDEVNOTIFY notify_handle;
     std::mutex section_;
-    std::map<DeviceId,DeviceInfo> actual_devices_;
+    std::map<DeviceId,serial_monitor_lib::DeviceInfo> actual_devices_;
 };
 
 
