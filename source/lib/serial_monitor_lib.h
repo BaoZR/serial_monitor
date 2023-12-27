@@ -1,8 +1,8 @@
 
 /**
  * @file serial_monitor_lib.h
- * @brief 用于监控串口物理插入和物理拔出的库，只能在win32下使用
- * @details 监控窗口为固定名字的窗口，所以请勿重复调用。
+ * @brief Library for monitoring physical insertion and removal of serial ports, can only be used under win32
+ * @details The monitoring window has a fixed name, so please do not call it repeatedly.
  * @author cuicui
  * @date 2023-09-04
  * @version 0.1
@@ -35,8 +35,8 @@
 #define INOUT
 
 
-#define DEVICE_NEW                              (1)     /* 新的设备 */
-#define DEVICE_DELETE                           (2)     /* 被删除的设备 */
+#define DEVICE_NEW                              (1)     /* find new device */
+#define DEVICE_DELETE                           (2)     /* device deleted */
 
 typedef std::string DeviceId;
 
@@ -45,12 +45,12 @@ extern "C" {
 #endif // __cplusplus
 
 /**
- * @brief 监控的状态回调函数，用于初始化，串口设备插入，串口设备拔出时，返回状态，需传入monitor_init函数中
- * @param id 串口设备的ID
- * @param status 发现新的设备或者该设备已删除
+ * @brief The status callback function of the monitor needs to be passed into the monitor_init initialization function. When a serial device is inserted or pulled out, it returns device status information.
+ * @param id Serial device ID
+ * @param status New device found or old device deleted
  *               DEVICE_NEW 
  *               DEVICE_DELETE
- * @param friendly_name 发现新的设备时返回友好的串口名字，删除设备时返回之前友好的串口名字
+ * @param friendly_name Return the friendly serial name when discovering new devices, and return the previous friendly serial name when devices deleted
  */
 typedef void (*device_change_progress)(
     IN const std::string& id,
@@ -58,15 +58,15 @@ typedef void (*device_change_progress)(
     IN const std::string& friendly_name);
 
 /**
- * @brief 用于初始化监听线程，监听是单窗口，请勿重复调用
- * @param device_change_progress 传入的回调函数
+ * @brief Used to initialize the monitoring thread. Because the listening is single-window, please don't call it repeatedly.
+ * @param device_change_progress Require incoming callback function
  *  
  */
 void SERIAL_MONITOR_API monitor_init(
     IN device_change_progress progress_cb
 );
 
-/** @brief 用于关闭销毁监听
+/** @brief Used to destroy the listener.
  * 
  */
 void SERIAL_MONITOR_API monitor_terminate();
