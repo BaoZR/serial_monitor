@@ -3,7 +3,7 @@ en [English](README.md) | zh_CN [简体中文](readme/README.zh_CN.md)
 
 用于在windows上监听串口设备的插入和拔出,原理是开了个线程监听windows消息
 
-发布了一个用于演示效果的[demo](releases/tag/demo)和一个用于使用的[lib库](releases/tag/lib)
+发布了一个用于演示效果的[demo](https://github.com/BaoZR/serial_monitor/releases/tag/ui-demo)和一个用于使用的[lib库](https://github.com/BaoZR/serial_monitor/releases/tag/lib)
 
 ![image](demo.gif)
 

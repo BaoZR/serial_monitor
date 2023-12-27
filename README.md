@@ -4,7 +4,7 @@ en [English](README.md) | zh_CN [简体中文](README.zh_CN.md)
 The library is used for monitoring  the insertion and removal of serial port devices on Windows.
 The principle is to start a thread to monitor Windows messages.
 
-A demo was released for demonstration [demo](releases/tag/demo) A library was published for use [lib](releases/tag/lib)
+A demo was released for demonstration [demo](https://github.com/BaoZR/serial_monitor/releases/tag/ui-demo) A library was published for use [lib](https://github.com/BaoZR/serial_monitor/releases/tag/lib)
 
 ![image](demo.gif)
 
