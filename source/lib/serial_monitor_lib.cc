@@ -5,6 +5,9 @@
 #include "device_info.h"
 #include <iostream>
 #include <mutex>
+#include <string>
+
+typedef std::string DeviceId;
 
 class DeviceChange : public IDeviceChanged
 {
@@ -35,7 +38,7 @@ void DeviceChange::InterfaceRemoved(const std::string &lower_dbcc)
     {
         std::string name = actual_devices_[lower_dbcc].GetFriendlyName();
         actual_devices_.erase(lower_dbcc);
-        this->progress_cb_(lower_dbcc, DEVICE_DELETE, name);
+        this->progress_cb_(lower_dbcc.c_str(), DEVICE_DELETE, name.c_str());
     }
     section_.unlock();
 }
@@ -48,7 +51,7 @@ void DeviceChange::InterfaceArrival(const GUID &guid)
         if(actual_devices_.count((*iter).GetDbcc()) == 0)
         {
             actual_devices_[(*iter).GetDbcc()] = *iter;
-            this->progress_cb_((*iter).GetDbcc(), DEVICE_NEW, (*iter).GetFriendlyName());
+            this->progress_cb_((*iter).GetDbcc().c_str(), DEVICE_NEW, (*iter).GetFriendlyName().c_str());
         }
         section_.unlock();
     }

@@ -14,7 +14,7 @@
 #ifndef _SERIAL_MONITOR_LIB_H_
 #define _SERIAL_MONITOR_LIB_H_
 
-#include <string>
+
 
 #ifdef SERIAL_MONITOR_LIB_EXPORTS
 #ifdef _WIN32
@@ -38,7 +38,7 @@
 #define DEVICE_NEW                              (1)     /* find new device */
 #define DEVICE_DELETE                           (2)     /* device deleted */
 
-typedef std::string DeviceId;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,9 +53,9 @@ extern "C" {
  * @param friendly_name Return the friendly serial name when discovering new devices, and return the previous friendly serial name when devices deleted
  */
 typedef void (*device_change_progress)(
-    IN const std::string& id,
+    IN const char* id,
     IN int status,
-    IN const std::string& friendly_name);
+    IN const char* friendly_name);
 
 /**
  * @brief Used to initialize the monitoring thread. Because the listening is single-window, please don't call it repeatedly.

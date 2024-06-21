@@ -1,6 +1,6 @@
 #include "serial_monitor_lib.h"
 #include <iostream>
-void print_device(const std::string& id,int status,const std::string& friendly_name)
+void print_device(const char* id,int status,const char* friendly_name)
 {
     std::cout << "status:" << std::to_string(status) << std::endl;
     std::cout << "id:" << id << std::endl;
